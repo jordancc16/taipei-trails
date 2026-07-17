@@ -17,10 +17,15 @@ and stops worth stopping for.
 - 📱 Fully responsive
 
 ## Routes (15)
-Tamsui Riverside · Bali Left Bank · Xindian/Bitan · Keelung/Dajia · Shezidao
-Loop · Jingmei · Maokong climb · Yangmingshan Balaka · Sanzhi Coast · Rainbow
-Bridge Loop · Dahu Park · Guandu Plain · Wulai Valley · Shenkeng Old Street ·
-Bishanyan Night View.
+Each route is honestly tagged by type — **🚲 dedicated bikeway** (car-free) or
+**🚗 road route** (shared with traffic) — and you can filter by it.
+
+**Dedicated bikeways (9):** Tamsui Riverside · Bali Left Bank · Xindian/Bitan ·
+Keelung/Dajia · Shezidao Loop · Jingmei · Rainbow Bridge Loop · Erchong Floodway
+· Dahan River to Yingge.
+
+**Road routes (6):** Maokong climb · Yangmingshan Balaka · Sanzhi Coast · Wulai
+Valley · Shenkeng Old Street · Bishanyan Night View.
 
 ## Run locally
 It's a static site — just open `index.html` in a browser (an internet

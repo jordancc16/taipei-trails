@@ -4,11 +4,17 @@
    ============================================================ */
 
 const DIFF_COLOR = { Easy: "#2f7d4f", Moderate: "#d39614", Hard: "#c64034" };
+const TYPE_META = {
+  Bikeway: { icon: "🚲", label: "Dedicated bikeway" },
+  Road: { icon: "🚗", label: "Road route" },
+  Imported: { icon: "🧭", label: "Your GPX" },
+};
 const IMPORTED_PHOTO =
   "https://images.unsplash.com/photo-1541625602330-2277a4c46182?auto=format&fit=crop&w=1200&q=60";
 
 const state = {
   search: "",
+  type: "All",
   difficulty: "All",
   length: "All",
   sort: "rating",
@@ -53,9 +59,10 @@ function getFiltered() {
       t.area.toLowerCase().includes(q) ||
       t.tags.join(" ").toLowerCase().includes(q) ||
       t.summary.toLowerCase().includes(q);
+    const inType = state.type === "All" || t.type === state.type;
     const inDiff = state.difficulty === "All" || t.difficulty === state.difficulty;
     const inLen = matchesLength(t.distanceKm, state.length);
-    return inSearch && inDiff && inLen;
+    return inSearch && inType && inDiff && inLen;
   });
 
   list.sort((a, b) => {
@@ -72,9 +79,11 @@ function getFiltered() {
 function cardHTML(t) {
   const fav = state.favorites.includes(t.id);
   const agg = getAggregate(t);
+  const tm = TYPE_META[t.type] || TYPE_META.Bikeway;
   return `
     <article class="card" data-id="${t.id}">
       <div class="card-photo" style="background-image:url('${t.photo}')">
+        <span class="type-badge type-${t.type}">${tm.icon} ${t.type === "Bikeway" ? "Bikeway" : tm.label}</span>
         <button class="fav ${fav ? "on" : ""}" data-fav="${t.id}" title="Save">${fav ? "♥" : "♡"}</button>
         <span class="badge ${t.difficulty}">${t.difficulty}</span>
       </div>
@@ -289,6 +298,7 @@ function parseGPX(text, fallbackName) {
     id: `imported-${slugify(name)}-${raw.length}`,
     name,
     area: "Imported track",
+    type: "Imported",
     difficulty,
     distanceKm: Math.round(distanceKm * 10) / 10,
     elevationM: Math.round(elevationM),
@@ -397,8 +407,9 @@ function openDetail(id) {
 
   document.getElementById("m-hero").style.backgroundImage = `url('${t.photo}')`;
   document.getElementById("m-title").textContent = t.name;
+  const tm = TYPE_META[t.type] || TYPE_META.Bikeway;
   document.getElementById("m-sub").textContent =
-    `${t.area} · ${t.surface}${t.loop ? " · Loop" : ""}`;
+    `${t.area} · ${tm.icon} ${tm.label} · ${t.surface}${t.loop ? " · Loop" : ""}`;
   document.getElementById("m-summary").textContent = t.summary;
 
   document.getElementById("m-stats").innerHTML = `
@@ -503,6 +514,15 @@ function bindEvents() {
   document.getElementById("search").addEventListener("input", (e) => {
     state.search = e.target.value;
     renderCards();
+  });
+
+  document.querySelectorAll("[data-type]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      state.type = btn.dataset.type;
+      document.querySelectorAll("[data-type]").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      renderCards();
+    });
   });
 
   document.querySelectorAll("[data-diff]").forEach((btn) => {

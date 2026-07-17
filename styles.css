@@ -270,6 +270,20 @@ img { display: block; max-width: 100%; }
   background-size: cover;
   background-position: center;
 }
+.type-badge {
+  position: absolute;
+  left: 10px; top: 10px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(31, 42, 36, 0.72);
+  backdrop-filter: blur(2px);
+}
+.type-badge.type-Bikeway { background: rgba(47, 125, 79, 0.92); }
+.type-badge.type-Road { background: rgba(58, 74, 96, 0.9); }
+.type-badge.type-Imported { background: rgba(180, 120, 30, 0.92); }
 .card-photo .fav {
   position: absolute;
   top: 10px; right: 10px;
