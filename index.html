@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Taipei Trails — Bike Routes & Tourism</title>
+  <meta name="description" content="Discover the best cycling routes and sights around Taipei — riverside bikeways, mountain climbs and coastal rides." />
+
+  <!-- Leaflet map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="#">
+        <span class="mark">🚲</span>
+        <span>Taipei<span class="thin">Trails</span></span>
+      </a>
+      <label class="header-search">
+        <span>🔍</span>
+        <input id="search" type="text" placeholder="Search routes, areas or sights…" />
+      </label>
+      <nav class="header-nav">
+        <a href="#explore">Explore</a>
+        <a href="#map">Map</a>
+        <a href="#about">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-inner">
+      <h1>Find your next ride around Taipei</h1>
+      <p>Riverside bikeways, tea-mountain climbs and coastal escapes — with the sights, snacks and stops worth stopping for.</p>
+      <div class="chip-row">
+        <button class="chip" data-chip="Riverside">🌊 Riverside</button>
+        <button class="chip" data-chip="Sunset">🌅 Sunset rides</button>
+        <button class="chip" data-chip="Climb">⛰ Mountain climbs</button>
+        <button class="chip" data-chip="Night market">🍜 Night markets</button>
+        <button class="chip" data-chip="Family">👨‍👩‍👧 Family friendly</button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><b>10</b><span>Curated routes</span></div>
+        <div class="stat"><b>150+ km</b><span>Of bikeways</span></div>
+        <div class="stat"><b>4.6★</b><span>Average rating</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Explore -->
+  <main class="container" id="explore">
+    <div class="section-head">
+      <h2>Explore bike routes</h2>
+      <span class="count" id="result-count">10 routes</span>
+    </div>
+
+    <div class="filters">
+      <div class="filter-group">
+        <button data-diff="All" class="active">All</button>
+        <button data-diff="Easy">Easy</button>
+        <button data-diff="Moderate">Moderate</button>
+        <button data-diff="Hard">Hard</button>
+      </div>
+      <div class="filter-group">
+        <button data-len="All" class="active">Any length</button>
+        <button data-len="short">&lt; 12 km</button>
+        <button data-len="medium">12–20 km</button>
+        <button data-len="long">&gt; 20 km</button>
+      </div>
+      <select class="sort-select" id="sort">
+        <option value="rating">Sort: Top rated</option>
+        <option value="distance">Distance: short → long</option>
+        <option value="distance-desc">Distance: long → short</option>
+        <option value="elevation">Most climbing</option>
+      </select>
+    </div>
+
+    <div class="split">
+      <div class="cards" id="cards"></div>
+      <div id="map"></div>
+    </div>
+  </main>
+
+  <!-- About -->
+  <section class="site-footer" id="about">
+    <div class="footer-inner">
+      <div>
+        <b>🚲 TaipeiTrails</b>
+        <p>A community-style guide to cycling and sightseeing around Taipei.<br />
+        Ride safe: wear a helmet, carry water, and check the weather before mountain climbs.</p>
+      </div>
+      <div>
+        <b>Tips</b>
+        <p>YouBike 2.0 stations are near most riverside entrances.<br />
+        River gates close during heavy rain — check flood warnings.</p>
+      </div>
+      <div>
+        <b>Data</b>
+        <p>Routes are illustrative and community-curated.<br />
+        Maps © OpenStreetMap contributors.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Detail modal -->
+  <div class="modal-backdrop" id="modal">
+    <div class="modal">
+      <div class="modal-hero" id="m-hero">
+        <button class="close" title="Close">✕</button>
+        <div class="title-wrap">
+          <h2 id="m-title"></h2>
+          <div class="sub" id="m-sub"></div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="stat-strip" id="m-stats"></div>
+        <h3>Overview</h3>
+        <p id="m-summary"></p>
+        <h3>What you'll see</h3>
+        <ul class="highlight-list" id="m-highlights"></ul>
+        <h3>Route map</h3>
+        <div id="modal-map"></div>
+        <div class="modal-actions">
+          <button class="btn btn-primary" id="m-directions">🧭 Get cycling directions</button>
+          <button class="btn btn-ghost" id="m-fav">♡ Save route</button>
+        </div>
+
+        <h3>Reviews</h3>
+        <div class="review-form">
+          <div class="rate-row">
+            <span class="rate-label">Your rating:</span>
+            <div id="star-input" class="star-input"></div>
+          </div>
+          <input id="reviewer-name" type="text" maxlength="40" placeholder="Your name (optional)" />
+          <textarea id="reviewer-text" rows="3" maxlength="500" placeholder="How was the ride? Tips, conditions, favourite stops…"></textarea>
+          <div class="form-actions">
+            <button class="btn btn-primary" id="submit-review">Post review</button>
+            <span id="review-hint" class="review-hint"></span>
+          </div>
+        </div>
+        <div id="review-list" class="review-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
